@@ -2,11 +2,11 @@ package com.example.myversion;
 
 import javafx.scene.shape.Polygon;
 
-public class polygonShape extends shape {
+public class PolygonShape extends Shape {
 
     private double[] points;
 
-    public polygonShape(double[] points) {
+    public PolygonShape(double[] points) {
         this.points = points;
     }
 

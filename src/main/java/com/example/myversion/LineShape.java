@@ -2,9 +2,9 @@ package com.example.myversion;
 
 import javafx.scene.shape.Line;
 
-public class lineShape extends shape {
+public class LineShape extends Shape {
     private double startX, startY, endX, endY;
-    public lineShape(double startX, double startY, double endX, double endY) {
+    public LineShape(double startX, double startY, double endX, double endY) {
         this.startX = startX;
         this.startY = startY;
         this.endX = endX;

@@ -2,11 +2,11 @@ package com.example.myversion;
 
 import javafx.scene.shape.Ellipse;
 
-public class ellipseShape extends shape {
+public class EllipseShape extends Shape {
 
     private double centerX, centerY, radiusX, radiusY;
 
-    public ellipseShape(double X, double Y, double RX, double RY) {
+    public EllipseShape(double X, double Y, double RX, double RY) {
         this.centerX = X;
         this.centerY = Y;
         this.radiusX = RX;

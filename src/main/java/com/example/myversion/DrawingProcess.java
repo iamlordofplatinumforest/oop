@@ -1,13 +1,8 @@
 package com.example.myversion;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
-import javafx.scene.paint.Color;
 
-public class main extends Application {
-    @Override
+public class DrawingProcess {
+    /*
     public void start(Stage primaryStage) {
         Pane root = new Pane();
         shape line = new lineShape(10, 10, 100, 100);
@@ -49,8 +44,6 @@ public class main extends Application {
         primaryStage.setTitle("OOТПиСП");
         primaryStage.show();
     }
+    */
 
-    public static void main(String[] args) {
-        launch(args);
-    }
 }

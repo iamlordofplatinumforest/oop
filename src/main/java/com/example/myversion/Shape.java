@@ -1,9 +1,8 @@
 package com.example.myversion;
 
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Shape;
 
-public abstract class shape {
+public abstract class Shape {
     // abstract
     // общие хар-ки всех фигур без реализации
     // т.е. цвета и процесс создания
@@ -13,7 +12,7 @@ public abstract class shape {
     // protected
     // - инкапсуляция. только этот класс и классы-наследники (расширения)
 
-    public abstract Shape createShape();
+    public abstract javafx.scene.shape.Shape createShape();
 
     public void setInColor(Color color) {
         this.inColor = color;

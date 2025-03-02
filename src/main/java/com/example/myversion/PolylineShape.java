@@ -2,11 +2,11 @@ package com.example.myversion;
 
 import javafx.scene.shape.Polyline;
 
-public class polylineShape extends shape {
+public class PolylineShape extends Shape {
 
     private double[] points;
 
-    public polylineShape(double[] points) {
+    public PolylineShape(double[] points) {
         this.points = points;
     }
     @Override
