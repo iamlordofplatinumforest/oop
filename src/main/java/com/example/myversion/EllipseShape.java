@@ -1,23 +1,17 @@
 package com.example.myversion;
 
-import javafx.scene.shape.Ellipse;
+import javafx.scene.canvas.GraphicsContext;
 
-public class EllipseShape extends Shape {
-
-    private double centerX, centerY, radiusX, radiusY;
-
-    public EllipseShape(double X, double Y, double RX, double RY) {
-        this.centerX = X;
-        this.centerY = Y;
-        this.radiusX = RX;
-        this.radiusY = RY;
+public class EllipseShape implements Shape {
+    @Override
+    public void drawPreview(GraphicsContext gc, double startX, double startY, double endX, double endY, int angles) {
+        gc.strokeOval(Math.min(startX, endX), Math.min(startY, endY), Math.abs(endX - startX), Math.abs(endY - startY));
+        gc.fillOval(Math.min(startX, endX), Math.min(startY, endY), Math.abs(endX - startX), Math.abs(endY - startY));
     }
 
     @Override
-    public Ellipse createShape() {
-        Ellipse ellipse = new Ellipse(centerX, centerY, radiusX, radiusY);
-        ellipse.setFill(inColor);
-        ellipse.setStroke(borderColor);
-        return ellipse;
+    public void drawFinal(GraphicsContext gc, double startX, double startY, double endX, double endY, int angles) {
+        gc.strokeOval(Math.min(startX, endX), Math.min(startY, endY), Math.abs(endX - startX), Math.abs(endY - startY));
+        gc.fillOval(Math.min(startX, endX), Math.min(startY, endY), Math.abs(endX - startX), Math.abs(endY - startY));
     }
 }

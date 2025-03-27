@@ -1,24 +1,21 @@
 package com.example.myversion;
 
-import javafx.scene.shape.Rectangle;
+import javafx.scene.canvas.GraphicsContext;
 
-public class RectangleShape extends Shape {
-
-    private double X, Y, height, width;
-
-    public RectangleShape(double X, double Y, double height, double width) {
-        this.X = X;
-        this.Y = Y;
-        this.height = height;
-        this.width = width;
+public class RectangleShape implements Shape {
+    private void draw(GraphicsContext gc, double startX, double startY, double endX, double endY) {
+        double width = Math.abs(endX - startX);
+        double height = Math.abs(endY - startY);
+        gc.fillRect(Math.min(startX, endX), Math.min(startY, endY), width, height);
+        gc.strokeRect(Math.min(startX, endX), Math.min(startY, endY), width, height);
     }
     @Override
-    public Rectangle createShape() {
-        Rectangle rec = new Rectangle(X, Y, width, height);
-        rec.setFill(inColor);
-        rec.setStroke(borderColor);
-        return rec;
+    public void drawPreview(GraphicsContext gc, double startX, double startY, double endX, double endY, int angles) {
+        draw(gc, startX, startY, endX, endY);
     }
 
-
+    @Override
+    public void drawFinal(GraphicsContext gc, double startX, double startY, double endX, double endY, int angles) {
+        draw(gc, startX, startY, endX, endY);
+    }
 }

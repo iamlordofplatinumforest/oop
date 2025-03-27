@@ -2,6 +2,7 @@ package com.example.myversion;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.scene.paint.Color;
@@ -17,10 +18,13 @@ import javafx.scene.layout.Priority;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.stage.Modality;
-
+import javafx.scene.canvas.GraphicsContext;
 
 public class Main extends Application {
-    private Pane canvas;
+    private Canvas canvas;
+    private GraphicsContext gc;
+    private Shape currentShape;
+    private double startX, startY;
     private Slider thicknessSlider;
     private ColorPicker colorPicker;
     private ColorPicker fillColorPicker;
@@ -32,16 +36,21 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         VBox root = new VBox(10);
-        canvas = new Pane();
-        canvas.setPrefSize(800, 600);
+        canvas = new Canvas(800, 600);
+        gc = canvas.getGraphicsContext2D();
 
         anglesLbl.setVisible(false);
         anglesBox.setVisible(false);
+        anglesBox.setValue("3");
 
         shapeBox = new ComboBox<>();
         shapeBox.getItems().addAll(shapes);
         shapeBox.setValue(shapes[0]);
-        shapeBox.setOnAction(e -> checkShape());
+        shapeBox.setOnAction(e -> {
+            String selectedShape = shapeBox.getValue();
+            currentShape = DrawingProcess.getShape(selectedShape);
+            checkShape();
+        });
 
         thicknessSlider = new Slider(1, 10, 2);
         thicknessSlider.setShowTickLabels(true);
@@ -77,13 +86,46 @@ public class Main extends Application {
         controls.setStyle("-fx-border-style: solid; -fx-border-width: 2; -fx-border-color: gray;");
         root.getChildren().addAll(controls, canvas);
 
+        canvas.widthProperty().bind(root.widthProperty());
+        canvas.heightProperty().bind(root.heightProperty().subtract(controls.heightProperty()));
+
+        canvas.setOnMousePressed(e -> {
+            startX = e.getX();
+            startY = e.getY();
+        });
+
+        canvas.setOnMouseDragged(e -> {
+            gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+            if (currentShape != null) {
+                gc.setStroke(colorPicker.getValue());
+                gc.setLineWidth(thicknessSlider.getValue());
+                gc.setFill(fillColorPicker.getValue());
+                currentShape.drawPreview(gc, startX, startY, e.getX(), e.getY(), Integer.parseInt(anglesBox.getValue()));
+            }
+        });
+
+        canvas.setOnMouseReleased(e -> {
+            if (currentShape != null) {
+                gc.setStroke(colorPicker.getValue());
+                gc.setLineWidth(thicknessSlider.getValue());
+                gc.setFill(fillColorPicker.getValue());
+                currentShape.drawFinal(gc, startX, startY, e.getX(), e.getY(), Integer.parseInt(anglesBox.getValue()));
+            }
+        });
+
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle("ООТПиСП");
         primaryStage.setFullScreen(true);
         primaryStage.setFullScreenExitHint("");
         primaryStage.show();
+        shapeBox.setOnAction(e -> {
+            String selectedShape = shapeBox.getValue();
+            currentShape = DrawingProcess.getShape(selectedShape);
+            checkShape();
+        });
     }
+
 
     private void checkShape() {
         String value = shapeBox.getValue();
@@ -97,6 +139,7 @@ public class Main extends Application {
             anglesLbl.setVisible(false);
         }
     }
+
 
     private void openExtraWindow(Stage primaryStage) {
         Stage extraStage = new Stage();
@@ -128,8 +171,6 @@ public class Main extends Application {
         extraStage.setY(y);
         extraStage.show();
     }
-
-
 
     public static void main(String[] args) {
         launch(args);
