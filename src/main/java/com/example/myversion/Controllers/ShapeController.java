@@ -2,56 +2,78 @@ package com.example.myversion.Controllers;
 
 import com.example.myversion.Models.Figures.Shape;
 import com.example.myversion.Models.Utils.DrawingProcess;
+import com.example.myversion.Views.GUI;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.paint.Color;
 
 public class ShapeController {
+    private final GUI gui;
     private Shape currentShape;
     private double startX, startY;
 
-    public void handleShapeSelection(String shapeType) {
-        currentShape = DrawingProcess.getShape(shapeType);
+    public ShapeController(GUI gui) {
+        this.gui = gui;
+        setupEventHandlers();
     }
 
-    public void checkShape(String value, ComboBox<String> anglesBox, Label anglesLbl) {
-        if ("Многоугольник".equals(value) || "Ломаная".equals(value)) {
-            anglesBox.getItems().setAll("3", "4", "5", "6", "7", "8");
-            anglesBox.setValue("3");
-            anglesBox.setVisible(true);
-            anglesLbl.setVisible(true);
-        } else {
-            anglesBox.setVisible(false);
-            anglesLbl.setVisible(false);
+    private void setupEventHandlers() {
+        gui.getShapeBox().setOnAction(e -> handleShapeSelection());
+        gui.getCanvas().setOnMousePressed(e -> handleMousePressed(e.getX(), e.getY()));
+        gui.getCanvas().setOnMouseDragged(e -> handleMouseDragged(e.getX(), e.getY()));
+        gui.getCanvas().setOnMouseReleased(e -> handleMouseReleased(e.getX(), e.getY()));
+        gui.getExtraButton().setOnAction(e -> gui.openExtraWindow());
+    }
+
+    private void handleShapeSelection() {
+        String selectedShape = gui.getShapeBox().getValue();
+        currentShape = DrawingProcess.getShape(selectedShape);
+        updateAnglesVisibility(selectedShape);
+    }
+
+    private void updateAnglesVisibility(String shapeType) {
+        boolean isPolygon = "Многоугольник".equals(shapeType) || "Ломаная".equals(shapeType);
+        gui.getAnglesBox().setVisible(isPolygon);
+        gui.getAnglesLbl().setVisible(isPolygon);
+
+        if (isPolygon) {
+            gui.getAnglesBox().getItems().setAll("3", "4", "5", "6", "7", "8");
+            gui.getAnglesBox().setValue("3");
         }
     }
 
-    public void handleMousePressed(double x, double y) {
+    private void handleMousePressed(double x, double y) {
         startX = x;
         startY = y;
     }
 
-    public void handleMouseDragged(GraphicsContext gc, double endX, double endY,
-                                   Color strokeColor, Color fillColor,
-                                   double lineWidth, String anglesValue) {
+    private void handleMouseDragged(double endX, double endY) {
+        GraphicsContext gc = gui.getCanvas().getGraphicsContext2D();
         gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+
         if (currentShape != null) {
-            gc.setStroke(strokeColor);
-            gc.setLineWidth(lineWidth);
-            gc.setFill(fillColor);
-            currentShape.drawPreview(gc, startX, startY, endX, endY, Integer.parseInt(anglesValue));
+            applyDrawingStyles(gc);
+            currentShape.drawPreview(gc, startX, startY, endX, endY, getAnglesValue());
         }
     }
 
-    public void handleMouseReleased(GraphicsContext gc, double endX, double endY,
-                                    Color strokeColor, Color fillColor,
-                                    double lineWidth, String anglesValue) {
+    private void handleMouseReleased(double endX, double endY) {
+        GraphicsContext gc = gui.getCanvas().getGraphicsContext2D();
         if (currentShape != null) {
-            gc.setStroke(strokeColor);
-            gc.setLineWidth(lineWidth);
-            gc.setFill(fillColor);
-            currentShape.drawFinal(gc, startX, startY, endX, endY, Integer.parseInt(anglesValue));
+            applyDrawingStyles(gc);
+            currentShape.drawFinal(gc, startX, startY, endX, endY, getAnglesValue());
+        }
+    }
+
+    private void applyDrawingStyles(GraphicsContext gc) {
+        gc.setStroke(gui.getColorPicker().getValue());
+        gc.setFill(gui.getFillColorPicker().getValue());
+        gc.setLineWidth(gui.getThicknessSlider().getValue());
+    }
+
+    private int getAnglesValue() {
+        try {
+            return Integer.parseInt(gui.getAnglesBox().getValue());
+        } catch (NumberFormatException e) {
+            return 3;
         }
     }
 }

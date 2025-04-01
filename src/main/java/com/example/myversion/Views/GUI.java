@@ -11,22 +11,48 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class GUI {
-    private Canvas canvas;
-    private ComboBox<String> shapeBox;
-    private ComboBox<String> anglesBox;
-    private Label anglesLbl;
-    private Slider thicknessSlider;
-    private ColorPicker colorPicker;
-    private ColorPicker fillColorPicker;
-    private Button undoButton;
-    private Button redoButton;
-    private Button extraButton;
+    private final Stage primaryStage;
+    private final Canvas canvas;
+    private final ComboBox<String> shapeBox;
+    private final ComboBox<String> anglesBox;
+    private final Label anglesLbl;
+    private final Slider thicknessSlider;
+    private final ColorPicker colorPicker;
+    private final ColorPicker fillColorPicker;
+    private final Button extraButton;
+    private final Button undoButton;
+    private final Button redoButton;
+
+
+    public GUI(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+        this.canvas = new Canvas(800, 600);
+        this.shapeBox = new ComboBox<>();
+        this.anglesBox = new ComboBox<>();
+        this.anglesLbl = new Label("Углы:");
+        this.thicknessSlider = new Slider(1, 10, 2);
+        this.colorPicker = new ColorPicker(Color.BLACK);
+        this.fillColorPicker = new ColorPicker(Color.TRANSPARENT);
+        this.undoButton = new Button("←");
+        this.redoButton = new Button("→");
+        this.extraButton = new Button("Дополнительно");
+        setupControls();
+    }
+
+    private void setupControls() {
+        shapeBox.getItems().addAll("Линия", "Прямоугольник", "Овал", "Многоугольник", "Ломаная");
+        shapeBox.setValue("Линия");
+
+        anglesBox.setVisible(false);
+        anglesLbl.setVisible(false);
+        anglesBox.setValue("3");
+
+        thicknessSlider.setShowTickLabels(true);
+        thicknessSlider.setShowTickMarks(true);
+    }
 
     public Scene createMainScene() {
         VBox root = new VBox(10);
-        canvas = new Canvas(800, 600);
-        createControls();
-
         HBox controls = new HBox(20,
                 new Label("Фигура:"), shapeBox,
                 new Label("Толщина:"), thicknessSlider,
@@ -50,57 +76,35 @@ public class GUI {
         return new Scene(root);
     }
 
-    private void createControls() {
-        shapeBox = new ComboBox<>();
-        shapeBox.getItems().addAll("Линия", "Прямоугольник", "Овал", "Многоугольник", "Ломаная");
-        shapeBox.setValue("Линия");
-        anglesLbl = new Label("Углы:");
-        anglesBox = new ComboBox<>();
-        anglesBox.setVisible(false);
-        anglesLbl.setVisible(false);
-        anglesBox.setValue("3");
-
-        thicknessSlider = new Slider(1, 10, 2);
-        thicknessSlider.setShowTickLabels(true);
-        thicknessSlider.setShowTickMarks(true);
-
-        colorPicker = new ColorPicker(Color.BLACK);
-        fillColorPicker = new ColorPicker(Color.TRANSPARENT);
-
-        undoButton = new Button("←");
-        redoButton = new Button("→");
-        extraButton = new Button("Дополнительно");
+    public void setupPrimaryStage() {
+        primaryStage.setTitle("ООТПиСП");
+        primaryStage.setFullScreen(true);
+        primaryStage.setFullScreenExitHint("");
     }
 
-    public void setupPrimaryStage(Stage stage) {
-        stage.setTitle("ООТПиСП");
-        stage.setFullScreen(true);
-        stage.setFullScreenExitHint("");
-    }
-
-    public void openExtraWindow(Stage primaryStage) {
+    public void openExtraWindow() {
         Stage extraStage = new Stage();
         extraStage.setTitle("Дополнительные функции");
 
-        Button saveFileButton = new Button("Сохранить");
-        Button openFileButton = new Button("Загрузить");
-        Button pluginsButton = new Button("Загрузить плагин");
-
-        VBox layout = new VBox(10, saveFileButton, openFileButton, pluginsButton);
+        VBox layout = new VBox(10,
+                new Button("Сохранить"),
+                new Button("Загрузить"),
+                new Button("Загрузить плагин")
+        );
         layout.setPadding(new Insets(10));
         layout.setAlignment(Pos.CENTER);
 
-        Scene scene = new Scene(layout, 300, 200);
-        extraStage.setScene(scene);
+        extraStage.setScene(new Scene(layout, 300, 200));
         extraStage.setResizable(false);
         extraStage.initOwner(primaryStage);
         extraStage.initModality(Modality.APPLICATION_MODAL);
-
         extraStage.setX(primaryStage.getX() + (primaryStage.getWidth() - 300) / 2);
         extraStage.setY(primaryStage.getY() + (primaryStage.getHeight() - 200) / 2);
-        extraStage.show();
+
+        extraStage.showAndWait();
     }
 
+    // геттеры
     public Canvas getCanvas() { return canvas; }
     public ComboBox<String> getShapeBox() { return shapeBox; }
     public ComboBox<String> getAnglesBox() { return anglesBox; }
@@ -108,7 +112,5 @@ public class GUI {
     public Slider getThicknessSlider() { return thicknessSlider; }
     public ColorPicker getColorPicker() { return colorPicker; }
     public ColorPicker getFillColorPicker() { return fillColorPicker; }
-    public Button getUndoButton() { return undoButton; }
-    public Button getRedoButton() { return redoButton; }
     public Button getExtraButton() { return extraButton; }
 }
