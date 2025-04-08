@@ -19,4 +19,12 @@ public class DrawingProcess {
     public static Shape getShape(String type) {
         return shapes.get(type);
     }
+
+    public static boolean addPluginShape(String name, Shape shape) {
+        if (shapes.containsKey(name)) {
+            return false;
+        }
+        shapes.put(name, shape);
+        return true;
+    }
 }

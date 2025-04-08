@@ -9,7 +9,9 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import lombok.Getter; //автоматически генерировать геттеры/сеттеры их во время компиляции с помощью аннотаций
 
+@Getter
 public class GUI {
     private final Stage primaryStage;
     private final Canvas canvas;
@@ -103,14 +105,4 @@ public class GUI {
 
         extraStage.showAndWait();
     }
-
-    // геттеры
-    public Canvas getCanvas() { return canvas; }
-    public ComboBox<String> getShapeBox() { return shapeBox; }
-    public ComboBox<String> getAnglesBox() { return anglesBox; }
-    public Label getAnglesLbl() { return anglesLbl; }
-    public Slider getThicknessSlider() { return thicknessSlider; }
-    public ColorPicker getColorPicker() { return colorPicker; }
-    public ColorPicker getFillColorPicker() { return fillColorPicker; }
-    public Button getExtraButton() { return extraButton; }
 }

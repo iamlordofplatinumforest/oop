@@ -1,4 +1,5 @@
 module com.example.myversion {
+    requires static lombok;
     requires javafx.controls;
     requires javafx.fxml;
 
