@@ -1,7 +1,7 @@
 package com.example.myversion.Controllers;
 
 import com.example.myversion.Models.Figures.Shape;
-import com.example.myversion.Models.Utils.DrawingProcess;
+import com.example.myversion.Models.Utils.*;
 import com.example.myversion.Views.GUI;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -9,6 +9,7 @@ public class ShapeController {
     private final GUI gui;
     private Shape currentShape;
     private double startX, startY;
+    private final DrawingHistory history = new DrawingHistory();
 
     public ShapeController(GUI gui) {
         this.gui = gui;
@@ -21,6 +22,8 @@ public class ShapeController {
         gui.getCanvas().setOnMouseDragged(e -> handleMouseDragged(e.getX(), e.getY()));
         gui.getCanvas().setOnMouseReleased(e -> handleMouseReleased(e.getX(), e.getY()));
         gui.getExtraButton().setOnAction(e -> gui.openExtraWindow());
+        gui.getUndoButton().setOnAction(e -> undo());
+        gui.getRedoButton().setOnAction(e -> redo());
     }
 
     private void handleShapeSelection() {
@@ -47,7 +50,7 @@ public class ShapeController {
 
     private void handleMouseDragged(double endX, double endY) {
         GraphicsContext gc = gui.getCanvas().getGraphicsContext2D();
-        gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+        redrawAll(gc);
 
         if (currentShape != null) {
             applyDrawingStyles(gc);
@@ -57,10 +60,31 @@ public class ShapeController {
 
     private void handleMouseReleased(double endX, double endY) {
         GraphicsContext gc = gui.getCanvas().getGraphicsContext2D();
+
         if (currentShape != null) {
             applyDrawingStyles(gc);
-            currentShape.drawFinal(gc, startX, startY, endX, endY, getAnglesValue());
+            Shape finalShape = currentShape.clone();
+            finalShape.drawFinal(gc, startX, startY, endX, endY, getAnglesValue());
+            history.draw(finalShape);
+            updateUndoRedoButtons();
         }
+    }
+
+    public void undo() {
+        history.undo();
+        redrawAll(gui.getCanvas().getGraphicsContext2D());
+        updateUndoRedoButtons();
+    }
+
+    public void redo() {
+        history.redo();
+        redrawAll(gui.getCanvas().getGraphicsContext2D());
+        updateUndoRedoButtons();
+    }
+
+    private void updateUndoRedoButtons() {
+        gui.getUndoButton().setDisable(!history.isUndoAvailable());
+        gui.getRedoButton().setDisable(!history.isRedoAvailable());
     }
 
     private void applyDrawingStyles(GraphicsContext gc) {
@@ -74,6 +98,13 @@ public class ShapeController {
             return Integer.parseInt(gui.getAnglesBox().getValue());
         } catch (NumberFormatException e) {
             return 3;
+        }
+    }
+
+    private void redrawAll(GraphicsContext gc) {
+        gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+        for (Shape shape : history.getDrawnShapes()) {
+            shape.render(gc);
         }
     }
 }
