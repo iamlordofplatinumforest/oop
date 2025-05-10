@@ -1,5 +1,6 @@
 package com.example.myversion.Models.Figures;
 
+import com.example.myversion.Models.Utils.ShapeStyle;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import javafx.scene.canvas.GraphicsContext;
@@ -39,6 +40,18 @@ public class PolygonShape implements Shape {
 
     public PolygonShape() {}
 
+    private ShapeStyle style;
+
+    @Override
+    public void setStyle(ShapeStyle style) {
+        this.style = style;
+    }
+
+    @Override
+    public ShapeStyle getStyle() {
+        return style;
+    }
+
     @Override
     public String getType() {
         return "polygon";
@@ -60,6 +73,9 @@ public class PolygonShape implements Shape {
 
     @Override
     public void render(GraphicsContext gc) {
+        gc.setStroke(style.getStrokeColor());
+        gc.setFill(style.getFillColor());
+        gc.setLineWidth(style.getLineWidth());
         drawPolygon(gc);
     }
 
@@ -93,6 +109,7 @@ public class PolygonShape implements Shape {
         clone.centerY = this.centerY;
         clone.radius = this.radius;
         clone.sides = this.sides;
+        clone.style = this.style;
         return clone;
     }
 }

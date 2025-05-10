@@ -71,12 +71,16 @@ public class ShapeController {
 
     private void handleMouseReleased(double endX, double endY) {
         GraphicsContext gc = gui.getCanvas().getGraphicsContext2D();
-
         if (currentShape != null) {
-            applyDrawingStyles(gc);
             Shape finalShape = currentShape.clone();
+            finalShape.setStyle(new ShapeStyle(
+                    gui.getColorPicker().getValue(),
+                    gui.getFillColorPicker().getValue(),
+                    gui.getThicknessSlider().getValue()
+            ));
             finalShape.drawFinal(gc, startX, startY, endX, endY, getAnglesValue());
             history.draw(finalShape);
+            redrawAll(gc);
             updateUndoRedoButtons();
         }
     }

@@ -1,5 +1,6 @@
 package com.example.myversion.Models.Figures;
 
+import com.example.myversion.Models.Utils.ShapeStyle;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import javafx.scene.canvas.GraphicsContext;
@@ -51,6 +52,18 @@ public class PolylineShape implements Shape {
     public String getType() {
         return "polyline";
     }
+
+    private ShapeStyle style;
+
+    @Override
+    public void setStyle(ShapeStyle style) {
+        this.style = style;
+    }
+
+    @Override
+    public ShapeStyle getStyle() {
+        return style;
+    }
     @Override
     public void drawPreview(GraphicsContext gc, double startX, double startY, double endX, double endY, int segments) {
         saveDrawingStyles(gc);
@@ -73,6 +86,9 @@ public class PolylineShape implements Shape {
     public void render(GraphicsContext gc) {
       //  gc.setStroke(strokeColor);
        // gc.setLineWidth(lineWidth);
+        gc.setStroke(style.getStrokeColor());
+        gc.setFill(style.getFillColor());
+        gc.setLineWidth(style.getLineWidth());
         drawPolyline(gc, startX, startY, endX, endY, segments);
     }
 
@@ -111,6 +127,7 @@ public class PolylineShape implements Shape {
         clone.endX = this.endX;
         clone.endY = this.endY;
         clone.segments = this.segments;
+        clone.style = this.style;
       //  clone.strokeColor = this.strokeColor;
        // clone.lineWidth = this.lineWidth;
         return clone;

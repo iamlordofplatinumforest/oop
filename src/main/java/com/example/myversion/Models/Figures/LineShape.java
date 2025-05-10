@@ -1,5 +1,6 @@
 package com.example.myversion.Models.Figures;
 
+import com.example.myversion.Models.Utils.ShapeStyle;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import javafx.scene.shape.Line;
@@ -43,6 +44,18 @@ public class LineShape implements Shape {
 
     public LineShape() { }
 
+    private ShapeStyle style;
+
+    @Override
+    public void setStyle(ShapeStyle style) {
+        this.style = style;
+    }
+
+    @Override
+    public ShapeStyle getStyle() {
+        return style;
+    }
+
     @Override
     public void drawPreview(GraphicsContext gc, double startX, double startY, double endX, double endY, int angles) {
         gc.strokeLine(startX, startY, endX, endY);
@@ -59,6 +72,9 @@ public class LineShape implements Shape {
 
     @Override
     public void render(GraphicsContext gc) {
+        gc.setStroke(style.getStrokeColor());
+        gc.setFill(style.getFillColor());
+        gc.setLineWidth(style.getLineWidth());
         gc.strokeLine(startX, startY, endX, endY);
     }
 
@@ -69,6 +85,7 @@ public class LineShape implements Shape {
         clone.startY = this.startY;
         clone.endX = this.endX;
         clone.endY = this.endY;
+        clone.style = this.style;
         return clone;
     }
 }

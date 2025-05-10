@@ -1,5 +1,6 @@
 package com.example.myversion.Models.Figures;
 
+import com.example.myversion.Models.Utils.ShapeStyle;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import javafx.scene.canvas.GraphicsContext;
@@ -37,6 +38,18 @@ public class RectangleShape implements Shape {
 
     public RectangleShape() {}
 
+    private ShapeStyle style;
+
+    @Override
+    public void setStyle(ShapeStyle style) {
+        this.style = style;
+    }
+
+    @Override
+    public ShapeStyle getStyle() {
+        return style;
+    }
+
     private void draw(GraphicsContext gc, double startX, double startY, double endX, double endY) {
         double width = Math.abs(endX - startX);
         double height = Math.abs(endY - startY);
@@ -63,6 +76,9 @@ public class RectangleShape implements Shape {
 
     @Override
     public void render(GraphicsContext gc) {
+        gc.setStroke(style.getStrokeColor());
+        gc.setFill(style.getFillColor());
+        gc.setLineWidth(style.getLineWidth());
         draw(gc, startX, startY, endX, endY);
     }
 
@@ -73,6 +89,7 @@ public class RectangleShape implements Shape {
         clone.startY = this.startY;
         clone.endX = this.endX;
         clone.endY = this.endY;
+        clone.style = this.style;
         return clone;
     }
 }

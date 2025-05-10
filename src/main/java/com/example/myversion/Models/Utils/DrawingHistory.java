@@ -9,7 +9,6 @@ public class DrawingHistory {
     private int currentIndex = -1;
 
     public void draw(Shape shape) {
-        // Удаляем всё после текущего индекса при новом действии
         history.subList(currentIndex + 1, history.size()).clear();
         history.add(shape.clone());
         currentIndex++;
@@ -39,7 +38,6 @@ public class DrawingHistory {
         return currentIndex < history.size() - 1;
     }
 
-    // Для загрузки из файла
     public void loadShapes(List<Shape> shapes) {
         history.clear();
         history.addAll(shapes);
