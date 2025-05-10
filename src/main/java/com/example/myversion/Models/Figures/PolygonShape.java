@@ -1,13 +1,48 @@
 package com.example.myversion.Models.Figures;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import javafx.scene.canvas.GraphicsContext;
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonTypeName("polygon")
 public class PolygonShape implements Shape {
-    private double centerX, centerY, radius;
+    private double centerX;
+    private double centerY;
+    private double radius;
     private int sides;
 
+    @JsonProperty("centerX")
+    public double getCenterX() { return centerX; }
+
+    @JsonProperty("centerX")
+    public void setCenterX(double centerX) { this.centerX = centerX; }
+
+    @JsonProperty("centerY")
+    public double getCenterY() { return centerY; }
+
+    @JsonProperty("centerY")
+    public void setCenterY(double centerY) { this.centerY = centerY; }
+
+    @JsonProperty("radius")
+    public double getRadius() { return radius; }
+
+    @JsonProperty("radius")
+    public void setRadius(double radius) { this.radius = radius; }
+
+    @JsonProperty("sides")
+    public int getSides() { return sides; }
+
+    @JsonProperty("sides")
+    public void setSides(int sides) { this.sides = sides; }
+
+    public PolygonShape() {}
+
+    @Override
+    public String getType() {
+        return "polygon";
+    }
     @Override
     public void drawPreview(GraphicsContext gc, double startX, double startY, double endX, double endY, int sides) {
         this.centerX = startX;

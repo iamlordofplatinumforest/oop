@@ -1,9 +1,18 @@
 package com.example.myversion.Controllers;
 
 import com.example.myversion.Models.Figures.Shape;
+import com.example.myversion.Controllers.SerializationController;
 import com.example.myversion.Models.Utils.*;
 import com.example.myversion.Views.GUI;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
+import javafx.stage.FileChooser;
+
+import java.io.IOException;
+import java.util.List;
+import java.io.File;
 
 public class ShapeController {
     private final GUI gui;
@@ -24,6 +33,8 @@ public class ShapeController {
         gui.getExtraButton().setOnAction(e -> gui.openExtraWindow());
         gui.getUndoButton().setOnAction(e -> undo());
         gui.getRedoButton().setOnAction(e -> redo());
+        gui.getSaveButton().setOnAction(e -> handleSave());
+        gui.getLoadButton().setOnAction(e -> handleLoad());
     }
 
     private void handleShapeSelection() {
@@ -106,5 +117,43 @@ public class ShapeController {
         for (Shape shape : history.getDrawnShapes()) {
             shape.render(gc);
         }
+    }
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private void handleSave() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("JSON Files", "*.json"));
+        File file = fileChooser.showSaveDialog(gui.getPrimaryStage());
+
+        if (file != null) {
+            SerializationController.saveShapesToFile(
+                    file,
+                    history.getDrawnShapes()
+            );
+        }
+    }
+
+    private void handleLoad() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("JSON Files", "*.json"));
+        File file = fileChooser.showOpenDialog(gui.getPrimaryStage());
+
+        if (file != null) {
+            List<Shape> shapes = SerializationController.loadShapesFromFile(file);
+            if (shapes != null) {
+                history.loadShapes(shapes);
+                redrawAll(gui.getCanvas().getGraphicsContext2D());
+                updateUndoRedoButtons();
+            }
+        }
+    }
+
+    private void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setContentText(message);
+        alert.show();
     }
 }

@@ -24,6 +24,8 @@ public class GUI {
     private final Button extraButton;
     private final Button undoButton;
     private final Button redoButton;
+    private final Button saveButton;
+    private final Button loadButton;
 
 
     public GUI(Stage primaryStage) {
@@ -38,6 +40,8 @@ public class GUI {
         this.undoButton = new Button("←");
         this.redoButton = new Button("→");
         this.extraButton = new Button("Дополнительно");
+        this.loadButton = new Button("Загрузить");
+        this.saveButton = new Button("Сохранить");
         setupControls();
     }
 
@@ -89,8 +93,8 @@ public class GUI {
         extraStage.setTitle("Дополнительные функции");
 
         VBox layout = new VBox(10,
-                new Button("Сохранить"),
-                new Button("Загрузить"),
+                saveButton,
+                loadButton,
                 new Button("Загрузить плагин")
         );
         layout.setPadding(new Insets(10));

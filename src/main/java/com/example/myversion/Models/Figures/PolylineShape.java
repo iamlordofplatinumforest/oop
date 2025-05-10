@@ -1,14 +1,56 @@
 package com.example.myversion.Models.Figures;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+@JsonTypeName("polyline")
 public class PolylineShape implements Shape {
-    private double startX, startY, endX, endY;
+    private double startX;
+    private double startY;
+    private double endX;
+    private double endY;
     private int segments;
-    private Color strokeColor;
-    private double lineWidth;
 
+    @JsonProperty("startX")
+    public double getStartX() { return startX; }
+
+    @JsonProperty("startX")
+    public void setStartX(double startX) { this.startX = startX; }
+
+    @JsonProperty("startY")
+    public double getStartY() { return startY; }
+
+    @JsonProperty("startY")
+    public void setStartY(double startY) { this.startY = startY; }
+
+    @JsonProperty("endX")
+    public double getEndX() { return endX; }
+
+    @JsonProperty("endX")
+    public void setEndX(double endX) { this.endX = endX; }
+
+    @JsonProperty("endY")
+    public double getEndY() { return endY; }
+
+    @JsonProperty("endY")
+    public void setEndY(double endY) { this.endY = endY; }
+
+    @JsonProperty("segments")
+    public int getSegments() { return segments; }
+
+    @JsonProperty("segments")
+    public void setSegments(int segments) { this.segments = segments; }
+  //  private Color strokeColor;
+  //  private double lineWidth;
+
+    public PolylineShape() {}
+
+    @Override
+    public String getType() {
+        return "polyline";
+    }
     @Override
     public void drawPreview(GraphicsContext gc, double startX, double startY, double endX, double endY, int segments) {
         saveDrawingStyles(gc);
@@ -29,8 +71,8 @@ public class PolylineShape implements Shape {
 
     @Override
     public void render(GraphicsContext gc) {
-        gc.setStroke(strokeColor);
-        gc.setLineWidth(lineWidth);
+      //  gc.setStroke(strokeColor);
+       // gc.setLineWidth(lineWidth);
         drawPolyline(gc, startX, startY, endX, endY, segments);
     }
 
@@ -57,8 +99,8 @@ public class PolylineShape implements Shape {
     }
 
     private void saveDrawingStyles(GraphicsContext gc) {
-        this.strokeColor = (Color) gc.getStroke();
-        this.lineWidth = gc.getLineWidth();
+       // this.strokeColor = (Color) gc.getStroke();
+      //  this.lineWidth = gc.getLineWidth();
     }
 
     @Override
@@ -69,8 +111,8 @@ public class PolylineShape implements Shape {
         clone.endX = this.endX;
         clone.endY = this.endY;
         clone.segments = this.segments;
-        clone.strokeColor = this.strokeColor;
-        clone.lineWidth = this.lineWidth;
+      //  clone.strokeColor = this.strokeColor;
+       // clone.lineWidth = this.lineWidth;
         return clone;
     }
 }

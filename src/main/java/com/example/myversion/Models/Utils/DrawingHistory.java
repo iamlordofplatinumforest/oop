@@ -1,42 +1,48 @@
 package com.example.myversion.Models.Utils;
 
-import java.util.Stack;
-import java.util.List;
-import java.util.ArrayList;
 import com.example.myversion.Models.Figures.Shape;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DrawingHistory {
-    private final Stack<Shape> onCanvasStack = new Stack<>();
-    private final Stack<Shape> unDoStack = new Stack<>();
+    private final List<Shape> history = new ArrayList<>();
+    private int currentIndex = -1;
 
     public void draw(Shape shape) {
-        unDoStack.clear();
-        onCanvasStack.push(shape.clone());
+        // Удаляем всё после текущего индекса при новом действии
+        history.subList(currentIndex + 1, history.size()).clear();
+        history.add(shape.clone());
+        currentIndex++;
     }
 
     public void undo() {
-        if (!onCanvasStack.isEmpty()) {
-            Shape shape = onCanvasStack.pop();
-            unDoStack.push(shape);
+        if (isUndoAvailable()) {
+            currentIndex--;
         }
     }
 
     public void redo() {
-        if (!unDoStack.isEmpty()) {
-            Shape shape = unDoStack.pop();
-            onCanvasStack.push(shape);
+        if (isRedoAvailable()) {
+            currentIndex++;
         }
     }
 
     public List<Shape> getDrawnShapes() {
-        return new ArrayList<>(onCanvasStack);
+        return new ArrayList<>(history.subList(0, currentIndex + 1));
     }
 
     public boolean isUndoAvailable() {
-        return !onCanvasStack.isEmpty();
+        return currentIndex >= 0;
     }
 
     public boolean isRedoAvailable() {
-        return !unDoStack.isEmpty();
+        return currentIndex < history.size() - 1;
+    }
+
+    // Для загрузки из файла
+    public void loadShapes(List<Shape> shapes) {
+        history.clear();
+        history.addAll(shapes);
+        currentIndex = history.size() - 1;
     }
 }

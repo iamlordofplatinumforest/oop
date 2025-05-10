@@ -1,9 +1,46 @@
 package com.example.myversion.Models.Figures;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import javafx.scene.canvas.GraphicsContext;
 
+@JsonTypeName("ellipse")
 public class EllipseShape implements Shape {
-    private double startX, startY, endX, endY;
+    private double startX;
+    private double startY;
+    private double endX;
+    private double endY;
+
+    @JsonProperty("startX")
+    public double getStartX() { return startX; }
+
+    @JsonProperty("startX")
+    public void setStartX(double startX) { this.startX = startX; }
+
+    @JsonProperty("startY")
+    public double getStartY() { return startY; }
+
+    @JsonProperty("startY")
+    public void setStartY(double startY) { this.startY = startY; }
+
+    @JsonProperty("endX")
+    public double getEndX() { return endX; }
+
+    @JsonProperty("endX")
+    public void setEndX(double endX) { this.endX = endX; }
+
+    @JsonProperty("endY")
+    public double getEndY() { return endY; }
+
+    @JsonProperty("endY")
+    public void setEndY(double endY) { this.endY = endY; }
+
+    public EllipseShape() { }
+
+    @Override
+    public String getType() {
+        return "ellipse";
+    }
 
     @Override
     public void drawPreview(GraphicsContext gc, double startX, double startY, double endX, double endY, int angles) {
