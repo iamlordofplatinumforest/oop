@@ -8,13 +8,16 @@ import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
 import com.example.myversion.Models.Utils.ColorDeserializer;
 import com.example.myversion.Models.Utils.ColorSerializer;
+import lombok.Getter;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 public class SerializationController {
+    @Getter
     private static final ObjectMapper objectMapper = createObjectMapper();
+
     private static ObjectMapper createObjectMapper() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setVisibility(

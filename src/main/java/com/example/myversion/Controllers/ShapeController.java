@@ -2,6 +2,7 @@ package com.example.myversion.Controllers;
 
 import com.example.myversion.Models.Figures.Shape;
 import com.example.myversion.Controllers.SerializationController;
+import com.example.myversion.Models.Figures.ShapePlugin;
 import com.example.myversion.Models.Utils.*;
 import com.example.myversion.Views.GUI;
 import com.fasterxml.jackson.databind.JavaType;
@@ -11,7 +12,7 @@ import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 import java.io.File;
 
 public class ShapeController {
@@ -19,6 +20,7 @@ public class ShapeController {
     private Shape currentShape;
     private double startX, startY;
     private final DrawingHistory history = new DrawingHistory();
+    private final Map<String, Shape> pluginShapes = new HashMap<>();
 
     public ShapeController(GUI gui) {
         this.gui = gui;
@@ -35,12 +37,7 @@ public class ShapeController {
         gui.getRedoButton().setOnAction(e -> redo());
         gui.getSaveButton().setOnAction(e -> handleSave());
         gui.getLoadButton().setOnAction(e -> handleLoad());
-    }
-
-    private void handleShapeSelection() {
-        String selectedShape = gui.getShapeBox().getValue();
-        currentShape = DrawingProcess.getShape(selectedShape);
-        updateAnglesVisibility(selectedShape);
+        gui.getLoadPluginButton().setOnAction(e -> handleLoadPlugin());
     }
 
     private void updateAnglesVisibility(String shapeType) {
@@ -157,6 +154,49 @@ public class ShapeController {
 
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setContentText(message);
+        alert.show();
+    }
+
+    private void handleLoadPlugin() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("JAR Files", "*.jar"));
+        File file = fileChooser.showOpenDialog(gui.getPrimaryStage());
+
+        if (file != null) {
+            try {
+                List<ShapePlugin> plugins = PluginLoader.loadPlugin(file, SerializationController.getObjectMapper());
+                plugins.forEach(plugin -> {
+                    pluginShapes.put(plugin.getDisplayName(), plugin);
+                    DrawingProcess.addPluginShape(
+                            plugin.getDisplayName(),
+                            plugin
+                    );
+                });
+                gui.updateShapeList(getAvailableShapeNames());
+                showSuccess("Успешно загружено плагинов: " + plugins.size());
+            } catch (Exception e) {
+                showError("Ошибка загрузки плагина: " + e.getMessage());
+            }
+        }
+    }
+
+    private List<String> getAvailableShapeNames() {
+        List<String> names = new ArrayList<>(DrawingProcess.getBaseShapeNames());
+        names.addAll(pluginShapes.keySet());
+        return names;
+    }
+
+    private void handleShapeSelection() {
+        String selected = gui.getShapeBox().getValue();
+        currentShape = Optional.ofNullable(pluginShapes.get(selected))
+                .orElseGet(() -> DrawingProcess.getShape(selected));
+        updateAnglesVisibility(selected);
+    }
+
+    private void showSuccess(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setContentText(message);
         alert.show();
     }

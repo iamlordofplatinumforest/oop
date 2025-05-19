@@ -11,6 +11,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lombok.Getter; //автоматически генерировать геттеры/сеттеры их во время компиляции с помощью аннотаций
 
+import java.util.List;
+
 @Getter
 public class GUI {
     private final Stage primaryStage;
@@ -26,6 +28,7 @@ public class GUI {
     private final Button redoButton;
     private final Button saveButton;
     private final Button loadButton;
+    private final Button loadPluginButton;
 
 
     public GUI(Stage primaryStage) {
@@ -42,6 +45,7 @@ public class GUI {
         this.extraButton = new Button("Дополнительно");
         this.loadButton = new Button("Загрузить");
         this.saveButton = new Button("Сохранить");
+        this.loadPluginButton = new Button("Загрузить плагин");
         setupControls();
     }
 
@@ -55,6 +59,7 @@ public class GUI {
 
         thicknessSlider.setShowTickLabels(true);
         thicknessSlider.setShowTickMarks(true);
+        loadPluginButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
     }
 
     public Scene createMainScene() {
@@ -95,7 +100,7 @@ public class GUI {
         VBox layout = new VBox(10,
                 saveButton,
                 loadButton,
-                new Button("Загрузить плагин")
+                loadPluginButton
         );
         layout.setPadding(new Insets(10));
         layout.setAlignment(Pos.CENTER);
@@ -110,4 +115,9 @@ public class GUI {
         extraStage.showAndWait();
     }
 
+    public void updateShapeList(List<String> shapeNames) {
+        shapeBox.getItems().clear();
+        shapeBox.getItems().addAll(shapeNames);
+        shapeBox.setValue(shapeNames.get(0));
+    }
 }
